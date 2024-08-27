@@ -22,9 +22,14 @@ label{
   @apply bg-primary rounded-lg border-2 px-4 py-1 text-white text-lg font-bold
 }
 .btn-primary:active{
-  @apply bg-secondary 
+  @apply bg-white text-primary
 }
-
+.btn-secondary{
+  @apply bg-secondary rounded-lg border-2 px-4 py-1 text-white text-lg font-bold
+}
+.btn-secondary:active{
+  @apply bg-white text-secondary
+}
 table.basic{
   @apply w-full mt-5
 }
