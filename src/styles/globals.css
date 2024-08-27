@@ -3,40 +3,63 @@
 @tailwind utilities;
 
 
-input, textarea{
+input,
+textarea {
   @apply border-2 border-gray-300 rounded-md px-2 w-full;
   @apply mb-2;
 
 }
-input:focus textarea:focus{
+
+input:focus textarea:focus {
   @apply border-primary;
-  outline:none;
+  outline: none;
 }
-h1{
+
+h1 {
   @apply text-primary font-bold text-2xl mb-4
 }
-label{
+
+label {
   @apply text-primary font-bold mb-4
 }
-.btn-primary{
+
+.btn-primary {
   @apply bg-primary rounded-lg border-2 px-4 py-1 text-white text-lg font-bold
 }
-.btn-primary:active{
+
+.btn-primary:active {
   @apply bg-white text-primary
 }
-.btn-secondary{
+
+.btn-secondary {
   @apply bg-secondary rounded-lg border-2 px-4 py-1 text-white text-lg font-bold
 }
-.btn-secondary:active{
+
+.btn-secondary:active {
   @apply bg-white text-secondary
 }
-table.basic{
+
+table.basic {
   @apply w-full mt-5
 }
 
-table.basic tr td{
-@apply border-2 p-1
+table.basic tr td {
+  @apply border-2 p-1
 }
-table.basic thead{
+
+table.basic thead {
   @apply bg-primary text-white font-semibold
-  }
+}
+
+.attach-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.875rem; 
+  transition: font-size 0.3s ease;
+  cursor: pointer;
+}
+
+.attach-button:hover {
+  font-size: 0.95rem;
+}

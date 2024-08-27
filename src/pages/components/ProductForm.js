@@ -30,6 +30,21 @@ export default function ProductForm({
   if (goToProducts) {
     router.push("/products");
   }
+  async function uploadImages(ev) {
+    const files = ev.target?.files;
+    if (files?.length > 0) {
+      const data = new FormData();
+      for (const file of files) {
+        data.append('file', file)
+      }
+      const res = await fetch('/api/upload',{
+        method: 'POST',
+        body: data,
+
+      })
+      console.log(res.data);
+    }
+  }
   return (
     <form onSubmit={saveProduct}>
       <label htmlFor="">Nombre del producto</label>
@@ -41,13 +56,13 @@ export default function ProductForm({
       />
       <label>Imagenes</label>
       <div className="mb-2">
-        <button className="w-24 h-24 border flex text-center items-center justify-center text-sm text-gray-500 font-semibold gap-1 rounded-lg bg-gray-200">
+        <label className="w-24 h-24 border flex text-center items-center justify-center text-sm text-gray-500 font-semibold gap-1 rounded-lg bg-gray-200 attach-button">
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
             <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5m-13.5-9L12 3m0 0 4.5 4.5M12 3v13.5" />
           </svg>
-
           Adjuntar
-        </button>
+          <input type="file" onChange={uploadImages}  className="hidden"></input>
+        </label>
         {!images?.length && (
           <div>No hay imagenes para este producto</div>
         )}
