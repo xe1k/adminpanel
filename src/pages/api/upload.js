@@ -12,7 +12,7 @@ export default async function handle(req, res) {
       resolve({ fields, files });
     });
   });
-  console.log("length:", files.file.length);
+ 
   const client = new S3Client({
     region: "us-east-1",
     credentials: {
@@ -35,7 +35,7 @@ export default async function handle(req, res) {
     );
     const link = `https://${bucketName}.s3.amazonaws.com/${newFilename}`;
     links.push(link);
-    console.log(links)
+
   }
   
   return res.json({ links });
