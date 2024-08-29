@@ -27,7 +27,7 @@ export default function Products() {
         </thead>
         <tbody>
           {products.map((product) => (
-            <tr>
+            <tr key={product._id}>
               <td>{product.title}</td>
               <td className="flex justify-center items-center space-x-4">
                 <Link className="flex bg-primary text-white px-2 py-1 rounded-lg" href={"/products/edit/" + product._id}>

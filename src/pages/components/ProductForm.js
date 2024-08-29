@@ -2,6 +2,8 @@ import React from "react";
 import axios from "axios";
 import { useRouter } from "next/router";
 import { useState } from "react";
+import Spinner from "./Spinner";
+import { ReactSortable } from "react-sortablejs";
 
 export default function ProductForm({
   _id,
@@ -15,6 +17,7 @@ export default function ProductForm({
   const [price, setPrice] = useState(existingPrice || "");
   const [images, setImages] = useState(existingImages || []);
   const [goToProducts, setGoToProducts] = useState(false);
+  const [isUploading, setIsUploading] = useState(false);
   const router = useRouter();
   async function saveProduct(ev) {
     ev.preventDefault();
@@ -32,6 +35,7 @@ export default function ProductForm({
   async function uploadImages(ev) {
     const files = ev.target?.files;
     if (files?.length > 0) {
+      setIsUploading(true);
       const data = new FormData();
       for (const file of files) {
         data.append("file", file);
@@ -40,7 +44,11 @@ export default function ProductForm({
       setImages(oldImages => {
         return [...oldImages,...res.data.links];
       });
+      setIsUploading(false);
     }
+  }
+  function updateImagesOrder(images){
+    setImages(images);
   }
   return (
     <form onSubmit={saveProduct}>
@@ -53,11 +61,22 @@ export default function ProductForm({
       />
       <label>Imagenes</label>
       <div className="mb-2 flex flex-wrap gap-2">
+        <ReactSortable 
+        list={images} 
+        setList={updateImagesOrder}
+        className="flex flex-wrap gap-2"
+        >
         {!!images?.length && images.map(link =>(
           <div key={link} className="h-24">
             <img className="rounded-lg" src={link} alt="" />
           </div>
         ))}
+        </ReactSortable>
+        {isUploading &&(
+          <div className="w-24 h-24 border flex text-center items-center justify-center text-sm text-gray-500 font-semibold gap-2 rounded-lg bg-gray-200 attach">
+            <Spinner/>
+          </div>
+        )}
         <label className="w-24 h-24 border flex text-center items-center justify-center text-sm text-gray-500 font-semibold gap-1 rounded-lg bg-gray-200 attach-button">
           <svg
             xmlns="http://www.w3.org/2000/svg"
