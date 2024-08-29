@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from "react";
 import Layout from "./components/Layout";
 import axios from 'axios';
+import { withSwal } from "react-sweetalert2";
+import Swal from 'sweetalert2'
 
-export default function Categories() {
+ function Categories({swal}) {
   const [editedCategory, setEditedCategory] = useState(null);
   const [name, setName] = useState("");
   const [categories, setCategories] = useState([]);
@@ -17,7 +19,14 @@ export default function Categories() {
   }
   async function saveCategory(ev) {
     ev.preventDefault();
-    await axios.post('/api/categories', { name, parentCategory });
+    const data = { name, parentCategory }
+    if (editedCategory) {
+      data._id=editedCategory._id;
+      await axios.put('/api/categories', data);
+      setEditedCategory(null)
+    } else {
+      await axios.post('/api/categories', data);
+    }
     setName('');
     fetchCategory();
   }
@@ -26,7 +35,31 @@ export default function Categories() {
     setName(category.name);
     setParentCategory(category.parent?._id);
   }
-
+function deleteCategory(category){
+  Swal.fire({
+    title: "¿Estás seguro?",
+    text: `¿Desea eliminar "${category.name}"?`,
+    icon: "warning",
+    iconColor:"#F70505",
+    showCancelButton: true,
+    confirmButtonColor: "#d33",
+    cancelButtonColor: "#444444",
+    cancelButtonText: "Cancelar",
+    confirmButtonText: "Eliminar"
+  }).then( async result => {
+    if (result.isConfirmed) {
+      Swal.fire({
+        title: "Eliminado!",
+        text: `"${category.name}" ha sido eliminada`,
+        icon: "success",
+        confirmButtonColor: "#d33",
+      });
+      const {_id} = category;
+      await axios.delete('/api/categories?_id='+_id);
+      fetchCategory();
+    }
+  });
+}
   return (
     <Layout>
       <h1>Categorias</h1>
@@ -45,7 +78,7 @@ export default function Categories() {
           value={parentCategory}
           onChange={ev => setParentCategory(ev.target.value)}
         >
-          <option value="">No hay otra categoria</option>
+          <option value="">No tiene subcategoría</option>
           {categories.length > 0 && categories.map(category => (
             <option value={category._id}>{category.name}</option>
           ))}
@@ -73,7 +106,10 @@ export default function Categories() {
                   onClick={() => editCategory(category)}>
                   Editar
                 </button>
-                <button className="btn-primary">
+                <button 
+                onClick={() => deleteCategory(category)}
+                className="btn-primary"
+                >
                   Eliminar</button>
               </td>
             </tr>
@@ -83,3 +119,6 @@ export default function Categories() {
     </Layout>
   );
 }
+export default withSwal (({swal}, ref) =>(
+  <Categories swal={swal}/>
+))
