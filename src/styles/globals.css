@@ -42,6 +42,14 @@ label {
   @apply bg-white text-secondary
 }
 
+.btn-third {
+  @apply bg-primary rounded-lg border-2 px-4 py-1 text-white text-sm font-bold
+}
+
+.btn-third:active {
+  @apply bg-white text-primary
+}
+
 table.basic {
   @apply w-full mt-5
 }
