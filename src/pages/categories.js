@@ -20,7 +20,7 @@ function Categories({ swal }) {
   }
   async function saveCategory(ev) {
     ev.preventDefault();
-    const data = { name, parentCategory };
+    const data = { name, parentCategory: parentCategory || null };
     if (editedCategory) {
       data._id = editedCategory._id;
       await axios.put("/api/categories", data);
@@ -29,6 +29,7 @@ function Categories({ swal }) {
       await axios.post("/api/categories", data);
     }
     setName("");
+    setParentCategory("");
     fetchCategory();
   }
   function editCategory(category) {
@@ -80,9 +81,9 @@ function Categories({ swal }) {
       return properties;
     });
   }
-  function removeProperty(indexToRemove){
-    setProperties(prev => {
-      return [...prev].filter((p,pIndex) =>{
+  function removeProperty(indexToRemove) {
+    setProperties((prev) => {
+      return [...prev].filter((p, pIndex) => {
         return pIndex !== indexToRemove;
       });
     });
@@ -144,53 +145,67 @@ function Categories({ swal }) {
                   }
                   placeholder="values"
                 />
-                <button 
-                className="btn-secondary"
-                onClick={() =>removeProperty(index)}
-                type="button"
+                <button
+                  className="btn-secondary"
+                  onClick={() => removeProperty(index)}
+                  type="button"
                 >
                   Eliminar
-                  </button>
+                </button>
               </div>
             ))}
         </div>
-
-        <button type="submit" className="btn-primary">
-          Guardar
-        </button>
+        <div className="flex gap-1">
+          <button type="submit" className="btn-primary">
+            Guardar
+          </button>
+          {editedCategory && (
+            <button className="btn-secondary"
+            onClick={()=> {
+              setEditedCategory(null);
+              setName("");
+              setParentCategory("");
+            }}
+            type="button"
+            >Cancelar</button>
+          )}
+        </div>
       </form>
-      <table className="basic mt-4">
-        <thead>
-          <tr>
-            <td>Subcategoria</td>
-            <td>Categoria</td>
-            <td></td>
-          </tr>
-        </thead>
-        <tbody>
-          {categories.length > 0 &&
-            categories.map((category) => (
-              <tr>
-                <td>{category.name}</td>
-                <td>{category?.parent?.name}</td>
-                <td>
-                  <button
-                    className="btn-primary mr-1"
-                    onClick={() => editCategory(category)}
-                  >
-                    Editar
-                  </button>
-                  <button
-                    onClick={() => deleteCategory(category)}
-                    className="btn-secondary"
-                  >
-                    Eliminar
-                  </button>
-                </td>
-              </tr>
-            ))}
-        </tbody>
-      </table>
+
+      {!editedCategory && (
+        <table className="basic mt-4">
+          <thead>
+            <tr>
+              <td>Subcategoria</td>
+              <td>Categoria</td>
+              <td></td>
+            </tr>
+          </thead>
+          <tbody>
+            {categories.length > 0 &&
+              categories.map((category) => (
+                <tr>
+                  <td>{category.name}</td>
+                  <td>{category?.parent?.name}</td>
+                  <td>
+                    <button
+                      className="btn-primary mr-1"
+                      onClick={() => editCategory(category)}
+                    >
+                      Editar
+                    </button>
+                    <button
+                      onClick={() => deleteCategory(category)}
+                      className="btn-secondary"
+                    >
+                      Eliminar
+                    </button>
+                  </td>
+                </tr>
+              ))}
+          </tbody>
+        </table>
+      )}
     </Layout>
   );
 }
