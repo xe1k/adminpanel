@@ -20,7 +20,14 @@ function Categories({ swal }) {
   }
   async function saveCategory(ev) {
     ev.preventDefault();
-    const data = { name, parentCategory: parentCategory || null };
+    const data = { 
+      name, 
+      parentCategory: parentCategory, 
+      properties:properties.map(p => ({
+        name:p.name,
+        values:p.values.split(','),
+      })) ,
+    };
     if (editedCategory) {
       data._id = editedCategory._id;
       await axios.put("/api/categories", data);
@@ -30,12 +37,21 @@ function Categories({ swal }) {
     }
     setName("");
     setParentCategory("");
+    setProperties([]);
     fetchCategory();
   }
   function editCategory(category) {
     setEditedCategory(category);
     setName(category.name);
     setParentCategory(category.parent?._id);
+    const categoryProperties = Array.isArray(category.properties)
+    ? category.properties.map(({ name, values }) => ({
+        name,
+        values: values.join(","),
+      }))
+    : [];
+
+  setProperties(categoryProperties);
   }
   function deleteCategory(category) {
     Swal.fire({
@@ -126,11 +142,11 @@ function Categories({ swal }) {
           </button>
           {properties.length > 0 &&
             properties.map((property, index) => (
-              <div className="flex gap-1 mb-2">
+              <div className="flex gap-1 mb-2" key={index}>
                 <input
                   className="mb-0"
                   type="text"
-                  values={property.name}
+                  value={property.name}
                   onChange={(ev) =>
                     handlePropertyNameChange(index, property, ev.target.value)
                   }
@@ -139,7 +155,7 @@ function Categories({ swal }) {
                 <input
                   className="mb-0"
                   type="text"
-                  values={property.values}
+                  value={property.values}
                   onChange={(ev) =>
                     handlePropertyValuesChange(index, property, ev.target.value)
                   }
@@ -165,6 +181,7 @@ function Categories({ swal }) {
               setEditedCategory(null);
               setName("");
               setParentCategory("");
+              setProperties([]);
             }}
             type="button"
             >Cancelar</button>
