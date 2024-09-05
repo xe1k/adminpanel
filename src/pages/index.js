@@ -8,7 +8,7 @@ export default function index() {
     <Layout>
       <div className="text-blue-900 flex justify-between">
         <h2>
-          Hello, <b>{session?.user?.name}</b>
+          Hello, <b>{session?.user?.email}</b>
           </h2>
         <div className="flex text-black">
           <img src={session?.user?.image} alt="" className="h-6 w-6 mr-2 rounded-xl"/>
